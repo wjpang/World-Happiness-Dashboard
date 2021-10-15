@@ -1,46 +1,56 @@
 {
     "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
     "title":"World Happiness Score by Country",
-    "width":800,
+    "width":"container",
     "height":600,
-    "data":{
-        "url":"https://raw.githubusercontent.com/KaneSec/vega_lite/main/3_choropleth_map/js/ne_110m_admin_0_countries.topojson",
-        "format":{
-            "type":"topojson",
-            "feature":"ne_110m_admin_0_countries"
-        }
-    },
-    "transform":[
-        {
-            "lookup":"properties.NAME",
-            "from":{
-                "data":{
-                    "url":"https://raw.githubusercontent.com/KaneSec/vega_lite/main/3_choropleth_map/data/covid_10_10_2020.csv"
-                },
-                "key":"Country",
-                "fields":[
-                    "Active"
-                ]
-            }
-        },
-        {
-            "calculate":"datum.Active + 0.1",
-            "as":"Active Cases"
-        }
-    ],
     "projection":{
         "type":"equirectangular"
     },
+    "params":[
+        {
+            "name":"Year",
+            "value":2020,
+            "bind":{
+                "input":"range",
+                "min":2006,
+                "max":2020,
+                "step":1
+            }
+        }
+    ],
+    "data":{
+        "url":"https://raw.githubusercontent.com/wjpang/World-Happiness-Dashboard/main/data_clean/WHR_data_clean.csv"
+    },
+    "transform":[
+        {
+            "lookup":"Country",
+            "from":{
+                "data":{
+                    "url":"https://raw.githubusercontent.com/wjpang/World-Happiness-Dashboard/main/json/ne_110m_admin_0_countries.topo.json",
+                    "format":{
+                        "type":"topojson",
+                        "feature":"ne_110m_admin_0_countries"
+                    }
+                },
+                "key":"properties.NAME"
+            },
+            "as":"geo"
+        },
+        {
+            "filter":"year(datum.Year) == Year"
+        }
+    ],
     "mark":{
         "type":"geoshape"
     },
     "encoding":{
+        "shape":{
+            "field":"geo",
+            "type":"geojson"
+        },
         "color":{
-            "field":"Active Cases",
-            "type":"quantitative",
-            "scale":{
-                "type":"log"
-            }
+            "field":"Happiness Score",
+            "type":"quantitative"
         },
         "tooltip":[
             {
@@ -49,8 +59,9 @@
                 "title":"Country"
             },
             {
-                "field":"Active",
-                "type":"quantitative"
+                "field":"Happiness Score",
+                "type":"quantitative",
+                "format":".2f"
             }
         ]
     }
