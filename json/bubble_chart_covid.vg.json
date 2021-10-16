@@ -1,0 +1,123 @@
+{
+    "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+    "width":"container",
+    "height":500,
+    "title":"Change in Happiness Score against COVID-19 deaths",
+    "data":{
+        "url":"https://raw.githubusercontent.com/wjpang/World-Happiness-Dashboard/main/data_clean/WHR_covid_clean.csv"
+    },
+    "encoding":{
+        "x":{
+            "field":"Change in Happiness",
+            "type":"quantitative"
+        },
+        "y":{
+            "field":"COVID-19 deaths per 100,000 population in 2020",
+            "type":"quantitative"
+        }
+        
+    },
+    "layer":[
+        {
+            "mark":"circle",
+            "encoding":{
+                "size":{
+                    "field":"Population 2020",
+                    "title":"Population",
+                    "type":"quantitative",
+                    "scale":{
+                        "type":"threshold",
+                        "domain":[
+                            1000000,
+                            10000000,
+                            50000000,
+                            100000000,
+                            500000000
+                        ],
+                        "range":[
+                            10,
+                            50,
+                            150,
+                            200,
+                            300,
+                            400
+                        ]
+                    },
+                    "legend":{
+                        "format":".1s"
+                    }
+                },
+                "color":{
+                    "field":"Continent",
+                    "type":"nominal",
+                    "scale":{
+                        "domain":[
+                            "North America",
+                            "South America",
+                            "Europe",
+                            "Africa",
+                            "Asia",
+                            "Oceania"
+                        ],
+                        "range":[
+                            "#e41a1c",
+                            "#984ea3",
+                            "#ff7f00",
+                            "#a6cee3",
+                            "#377eb8",
+                            "#a65628"
+                        ]
+                    }
+                },
+                "tooltip":[
+                    {
+                        "field":"Country",
+                        "type":"nominal"
+                    },
+                    {
+                        "field":"COVID-19 deaths per 100,000 population in 2020",
+                        "type":"quantitative",
+                        "format":".2f"
+                    }
+                ]
+            }
+        },
+        {
+            "mark":{
+                "type":"text",
+                "align":"right",
+                "baseline":"middle",
+                "dx":-12,
+                "fontSize":11.5,
+                "fontStyle":"italic"
+            },
+            "encoding":{
+                "text":{
+                    "field":"Country",
+                    "type":"nominal"
+                },
+                "color":{
+                    "value":"black"
+                },
+                "opacity":{
+                    "condition":{
+                        "test":"datum['Country'] == 'China' || datum['Country'] == 'Australia' || datum['Country'] == 'New Zealand' ||  datum['Country'] == 'United States'",
+                        "value":1
+                    },
+                    "value":0
+                },
+                "tooltip":[
+                    {
+                        "field":"Country",
+                        "type":"nominal"
+                    },
+                    {
+                        "field":"COVID-19 deaths per 100,000 population in 2020",
+                        "type":"quantitative",
+                        "format":".2f"
+                    }
+                ]
+            }
+        }
+    ]
+}
