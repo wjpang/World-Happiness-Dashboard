@@ -1,7 +1,7 @@
 {
     "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
     "width":"container",
-    "height":500,
+    "height":400,
     "title":"Happiness Score Metric Comparisons",
     "data":{
         "url":"https://raw.githubusercontent.com/wjpang/World-Happiness-Dashboard/main/data_clean/WHR_data_clean_with_population.csv"
