@@ -1,0 +1,172 @@
+{
+    "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+    "width":800,
+    "height":500,
+    "title":"Happiness Score Metric Comparisons",
+    "data":{
+        "url":"https://raw.githubusercontent.com/wjpang/World-Happiness-Dashboard/main/data_clean/WHR_data_clean_with_population.csv"
+    },
+    "params":[
+        {
+            "name":"Year_selection",
+            "value":2020,
+            "bind":{
+                "input":"range",
+                "min":2005,
+                "max":2020,
+                "step":1,
+                "name":"Year:  "
+            }
+        },
+        {
+            "name":"x_axis_selection",
+            "value":"Log GDP per capita",
+            "bind":{
+                "input":"select",
+                "options":[
+                    "Log GDP per capita",
+                    "Social Support",
+                    "Life Expectancy",
+                    "Freedom Score",
+                    "Generosity",
+                    "Perceptions of Corruption"
+                ],
+                "name":"Metric to compare:  "
+            }
+        }
+    ],
+    "transform":[
+        {
+            "calculate":"datum[x_axis_selection]",
+            "as": "x_axis"
+        },
+        {
+            "filter":"datum.Year == Year_selection"
+        },
+        {
+            "filter":"datum[x_axis_selection] > 0"
+        }
+    ],
+    "encoding":{
+        "x":{
+            "field":"x_axis",
+            "type":"quantitative"
+        },
+        "y":{
+            "field":"Happiness Score",
+            "type":"quantitative"
+        }
+    },
+    "layer":[
+        {
+            "mark":"circle",
+            "encoding":{
+                "size":{
+                    "field":"Population",
+                    "type":"quantitative",
+                    "scale":{
+                        "type":"threshold",
+                        "domain":[
+                            1000000,
+                            10000000,
+                            50000000,
+                            100000000,
+                            500000000
+                        ],
+                        "range":[
+                            10,
+                            50,
+                            150,
+                            200,
+                            300,
+                            400
+                        ]
+                    },
+                    "legend":{
+                        "format":".1s"
+                    }
+                },
+                "color":{
+                    "field":"Continent",
+                    "type":"nominal",
+                    "scale":{
+                        "domain":[
+                            "North America",
+                            "South America",
+                            "Europe",
+                            "Africa",
+                            "Asia",
+                            "Oceania"
+                        ],
+                        "range":[
+                            "#e41a1c",
+                            "#984ea3",
+                            "#ff7f00",
+                            "#a6cee3",
+                            "#377eb8",
+                            "#a65628"
+                        ]
+                    }
+                },
+                "tooltip":[
+                    {
+                        "field":"Country",
+                        "type":"nominal"
+                    },
+                    {
+                        "field":"Happiness Score",
+                        "type":"quantitative",
+                        "format":".2f"
+                    },
+                    {
+                        "field":"x_axis",
+                        "type":"quantitative",
+                        "format":".2f"
+                    }
+                ]
+            }
+        },
+        {
+            "mark":{
+                "type":"text",
+                "align":"right",
+                "baseline":"middle",
+                "dx":-12,
+                "fontSize":11.5,
+                "fontStyle":"italic"
+            },
+            "encoding":{
+                "text":{
+                    "field":"Country",
+                    "type":"nominal"
+                },
+                "color":{
+                    "value":"black"
+                },
+                "opacity":{
+                    "condition":{
+                        "test":"datum['Country'] == 'China' || datum['Country'] == 'Australia' || datum['Country'] == 'New Zealand' ||  datum['Country'] == 'United States'",
+                        "value":1
+                    },
+                    "value":0
+                },
+                "tooltip":[
+                    {
+                        "field":"Country",
+                        "type":"nominal"
+                    },
+                    {
+                        "field":"Happiness Score",
+                        "type":"quantitative",
+                        "format":".2f"
+                    },
+                    {
+                        "field":"x_axis",
+                        "type":"quantitative",
+                        "format":".2f"
+                    }
+                ]
+            }
+        }
+    ]
+}
